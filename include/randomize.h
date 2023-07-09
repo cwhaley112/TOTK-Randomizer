@@ -17,6 +17,8 @@ typedef std::uniform_int_distribution<std::mt19937::result_type> UD;
  * chaos = equal weighting for all unique game objects
  */
 void randomize(const std::filesystem::path romfsDir, std::filesystem::path targetDir, const std::vector<TrackedFile> &filesToEdit, const GameObjTracker trackers[], const int nTrackers, const bool chaos = false, const bool debug = false);
+std::vector<unsigned int> createEditQueue(std::string matches, std::unordered_map<std::string, unsigned int> &getTrackerIx);
+std::string randomizeMap(std::string bymlText, std::vector<std::vector<std::string>> &sampleData, std::vector<unsigned int> &queue, const GameObjTracker trackers[], UD uniform, std::mt19937 mt, const bool chaos);
 std::vector<std::string> createSampleData(const GameObjTracker tracker, const bool chaos);
 std::mt19937 initRNG(const bool debug);
 UD createUniformDistribution(const int b, const int a=0);

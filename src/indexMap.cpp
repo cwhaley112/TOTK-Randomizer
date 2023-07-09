@@ -181,7 +181,8 @@ bool readGameObjectData(const std::filesystem::path dataDir, GameObjTracker trac
 
             objName = line.substr(0,pos);
             count = std::stoi(line.substr(pos+1));
-            (*tracker.lookUpTable)[objName] = count;
+            if ((*tracker.lookUpTable).find(objName) != (*tracker.lookUpTable).end())
+                (*tracker.lookUpTable)[objName] = count; 
         }
     }
 

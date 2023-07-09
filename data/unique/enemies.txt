@@ -172,6 +172,7 @@ Enemy_PhantomGanon
 Enemy_Toby_Junior
 Enemy_Toby_Junior_Sky
 Enemy_Toby_Junior_Terminal
+Enemy_Treant_E_Dummy
 Enemy_Wizzrobe_Electric
 Enemy_Wizzrobe_Electric_Senior
 Enemy_Wizzrobe_Fire
