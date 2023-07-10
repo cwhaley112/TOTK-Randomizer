@@ -1,3 +1,6 @@
 [submodule "lib/oead"]
 	path = lib/oead
 	url = https://github.com/zeldamods/oead.git
+[submodule "lib/yaml-cpp"]
+	path = lib/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git

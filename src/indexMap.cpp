@@ -13,6 +13,17 @@ void readObjects(std::string file, std::unordered_map<std::string, unsigned int>
     }
 }
 
+void readObjectsToSet(std::string file, std::unordered_set<std::string> &objectLookUp)
+{
+    std::ifstream gameData(file);
+    std::string line;
+
+    while (std::getline(gameData, line))
+    {
+        objectLookUp.insert(trim(line));
+    }
+}
+
 bool checkFileExtension(std::filesystem::path file) {
     std::string extension = file.extension().string();
     return !std::filesystem::is_directory(file) && (extension == ".bgyml" || extension == ".byml");
@@ -26,14 +37,11 @@ void indexGameData(const std::filesystem::path romfsDir, std::vector<TrackedFile
 
     oead::Byml byml;
     std::vector<u8> buffer;
-    std::string parsed;
-    std::string bymlText;
-    std::string object;
+    std::string parsed, bymlText, object;
     GameObjTracker tracker;
     TrackedFile fileData;
     std::smatch m;
-    bool trackFile;
-    bool loggedTracker;
+    bool trackFile, loggedTracker;
     int i;
     // int j=0; // DEBUG
 
@@ -44,13 +52,14 @@ void indexGameData(const std::filesystem::path romfsDir, std::vector<TrackedFile
             continue;
         
         trackFile = false;
+        loggedTracker = false;
         byml = openByml(file.string(), buffer);
         bymlText = byml.ToText();
 
         for (i=0; i<nTrackers; i++) {
             tracker = trackers[i];
             parsed = bymlText;
-            loggedTracker = false;
+            loggedTracker = (i==0 || tracker.category != trackers[i-1].category);
             while (std::regex_search(parsed, m, tracker.filePattern)) {
                 object = parsed.substr(m.position(), m.length());
                 
@@ -77,10 +86,6 @@ void indexGameData(const std::filesystem::path romfsDir, std::vector<TrackedFile
 
         if (trackFile) 
             filesToEdit.push_back(fileData);
-
-        // DEBUG
-        // if (j>=250) break;
-        // j++;
     }
 }
 
@@ -158,12 +163,11 @@ bool readGameFileData(const std::filesystem::path dataDir, std::vector<TrackedFi
 bool readGameObjectData(const std::filesystem::path dataDir, GameObjTracker trackers[], const int nTrackers) {
 
     char fname[MAX_PATH_LEN];
+    char buf[MAX_PATH_LEN];
     GameObjTracker tracker;
     std::ifstream file;
-    char buf[MAX_PATH_LEN];
-    std::string line;
+    std::string line, objName;
     int pos;
-    std::string objName;
     unsigned int count;
 
     for (int i=0; i<nTrackers; i++) {

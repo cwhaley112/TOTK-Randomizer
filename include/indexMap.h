@@ -5,6 +5,7 @@
 #include <string>
 #include <regex>
 #include <unordered_map>
+#include <unordered_set>
 #include "NXFileIO.h"
 #include <iostream>
 #include "strUtil.h"
@@ -13,9 +14,27 @@
 
 typedef struct {
     std::string name;
+    std::string category;
     std::unordered_map<std::string, unsigned int> *lookUpTable;
     std::regex filePattern;
 } GameObjTracker;
+
+typedef struct {
+    std::unordered_set<std::string> oneHanded;
+    std::unordered_set<std::string> twoHanded;
+    std::unordered_set<std::string> bow;
+    std::unordered_set<std::string> shield;
+    std::unordered_set<std::string> weaponAttachments;
+    std::unordered_set<std::string> bowAttachments;
+    std::unordered_set<std::string> actorCandidates;
+} WeaponClass;
+
+typedef struct {
+    std::vector<std::string> oneHanded;
+    std::vector<std::string> shield;
+    std::vector<std::string> weaponAttachments;
+    std::vector<std::string> bowAttachments;
+} WeaponLists;
 
 typedef struct {
     std::string filePath; // path relative to romfs/Banc
@@ -23,6 +42,7 @@ typedef struct {
 } TrackedFile;
 
 void readObjects(std::string file, std::unordered_map<std::string, unsigned int> &objectLookUp);
+void readObjectsToSet(std::string file, std::unordered_set<std::string> &objectLookUp);
 
 /*
  * parses each byml file in romfs/Banc and logs which files have a tracked game object + tallies game object counts

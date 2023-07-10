@@ -41,27 +41,37 @@ int main(int argc, char *argv[])
     std::unordered_map<std::string, unsigned int> enemyLookUp;
     readObjects("../data/unique/enemies.txt", enemyLookUp);
     std::regex enemyPattern("(Enemy_)[a-zA-Z0-9_]+");
-    GameObjTracker enemies = {"enemy", &enemyLookUp, enemyPattern};
+    GameObjTracker enemies = {"enemy", "enemy", &enemyLookUp, enemyPattern};
 
-    // held weapons
-    // std::unordered_map<std::string, unsigned int> weaponLookUp;
-    // readObjects("../data/unique/weapons.txt", weaponLookUp);
-    // std::regex weaponPattern("(Weapon_(Lsword|Spear|Sword|Shield|Bow)_)[a-zA-Z0-9_]+");
-    // GameObjTracker weapons = {"weapon", &weaponLookUp, weaponPattern};
-
-    // TODO bugfix: weapons are prepended with "EquipmentUser_{weapontype}" --> don't want to replace these
-    // std::unordered_map<std::string, unsigned int> weaponLookUp;
-    // readObjects("../data/unique/weapons.txt", weaponLookUp);
-    // std::regex weaponPattern("(Weapon_(Lsword|Spear|Sword|Shield|Bow)_)[a-zA-Z0-9_]+");
-    // GameObjTracker weapons = {"weapon", &weaponLookUp, weaponPattern};
+    // weapons
+    std::unordered_map<std::string, unsigned int> weaponLookUp;
+    readObjects("../data/unique/allweapons.txt", weaponLookUp);
+    std::regex weaponPattern("(Weapon_(Lsword|Spear|Sword|Shield|Bow)_)[a-zA-Z0-9_]+");
+    GameObjTracker weapons = {"weapon", "enemy", &weaponLookUp, weaponPattern};
     
 
     GameObjTracker trackers[] = {
         enemies
-        // ,weapons
+        ,weapons
     };
 
     int nTrackers = sizeof(trackers)/sizeof(trackers[0]); // TIL you need to calc this in same scope that array is declared
+
+    WeaponClass weaponTypes;
+    readObjectsToSet("../data/unique/onehandedweapons.txt", weaponTypes.oneHanded);
+    readObjectsToSet("../data/unique/twohandedweapons.txt", weaponTypes.twoHanded);
+    readObjectsToSet("../data/unique/bows.txt", weaponTypes.bow);
+    readObjectsToSet("../data/unique/shields.txt", weaponTypes.shield);
+    readObjectsToSet("../data/unique/weaponattachments.txt", weaponTypes.weaponAttachments);
+    readObjectsToSet("../data/unique/arrowattachments.txt", weaponTypes.bowAttachments);
+    readObjectsToSet("../data/unique/canholdweapons.txt", weaponTypes.actorCandidates);
+
+    WeaponLists weaponLists = {
+        std::vector(weaponTypes.oneHanded.begin(), weaponTypes.oneHanded.end()),
+        std::vector(weaponTypes.shield.begin(), weaponTypes.shield.end()),
+        std::vector(weaponTypes.weaponAttachments.begin(), weaponTypes.weaponAttachments.end()),
+        std::vector(weaponTypes.bowAttachments.begin(), weaponTypes.bowAttachments.end())
+    };
 
     // try to read data from files
     if (reindex || !(readGameFileData(gameData, filesToEdit) && readGameObjectData(gameData, trackers, nTrackers)) // TODO test that exceptions are handled if files don't exist in orig banc folder (like if it gets moved)
@@ -74,5 +84,5 @@ int main(int argc, char *argv[])
             std::cout << "Couldn't write game object data to disk." << std::endl;
     }
 
-    randomize(romfsDir, targetDir, filesToEdit, trackers, nTrackers, chaos, debug);
+    randomize(romfsDir, targetDir, filesToEdit, trackers, nTrackers, weaponTypes, weaponLists, chaos, debug);
 }

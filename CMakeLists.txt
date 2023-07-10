@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(lib/oead)
+add_subdirectory(lib/yaml-cpp)
 
 file(GLOB_RECURSE csourcefiles "src/*.c")
 file(GLOB_RECURSE cppsourcefiles "src/*.cpp")
@@ -12,6 +13,6 @@ file(GLOB_RECURSE cppsourcefiles "src/*.cpp")
 add_executable(randomizer ${csourcefiles} ${cppsourcefiles})
 
 target_include_directories(randomizer PUBLIC ${CMAKE_SOURCE_DIR}/include)
-# target_include_directories(randomizer PUBLIC /opt/boost_1_82_0/boost)
 
 target_link_libraries(randomizer PUBLIC oead)
+target_link_libraries(randomizer PRIVATE yaml-cpp)
