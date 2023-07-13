@@ -70,7 +70,7 @@ Weapon_Bow_104 83
 Weapon_Sword_025 0
 Weapon_Spear_047 0
 Weapon_Shield_008 10
-None 1007
+None 1008
 Weapon_Shield_004 139
 Weapon_Sword_029 0
 Weapon_Bow_015 7
@@ -81,7 +81,7 @@ Weapon_Bow_006 79
 Weapon_Lsword_166 0
 Weapon_Spear_032 0
 Weapon_Shield_007 10
-Weapon_Bow_004 238
+Weapon_Bow_004 240
 Weapon_Bow_009 9
 Weapon_Bow_013 1
 Weapon_Bow_101 0
@@ -152,7 +152,7 @@ Weapon_Shield_037 0
 Weapon_Spear_112 128
 Weapon_Sword_101 52
 Weapon_Sword_047 0
-Weapon_Bow_040 79
+Weapon_Bow_040 80
 Weapon_Lsword_163 9
 Weapon_Sword_044 30
 Weapon_Sword_024 0

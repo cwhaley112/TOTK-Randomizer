@@ -56,7 +56,7 @@ Enemy_Zonau_Robot_Dark 0
 Enemy_LikeLike_Electric_RagdollShort 9
 Enemy_CaveMaster_Middle 60
 Enemy_Bokoblin_Guard_Middle_Cliff 38
-Enemy_Chuchu_Electric_Junior 138
+Enemy_Chuchu_Electric_Junior 137
 Enemy_Horablin_Guard_Junior 22
 Enemy_Chuchu_Middle 44
 Enemy_DungeonBoss_Goron_Uncleared 1
@@ -69,10 +69,10 @@ Enemy_LikeLike_Ice_RagdollShort 18
 Enemy_Bokoblin_Armor_Senior 82
 Enemy_LikeLike_Plane_RagdollShort 34
 Enemy_Bokoblin_Guard_Junior_Cliff 24
-Enemy_Assassin_Junior_Shooter_Subordinates 0
+Enemy_Assassin_Junior_Shooter_Subordinates 2
 Enemy_Chuchu_Fire_Middle 33
 Enemy_Zonau_Robot_Junior_Lookout_Mile 52
-Enemy_Lynel_Boss 3
+Enemy_Lynel_Boss 2
 Enemy_Chuchu_Ice_Junior 102
 Enemy_Chuchu_Electric_Middle_Army 2
 Enemy_DungeonBoss_Goron_Underground 3
@@ -83,7 +83,7 @@ Enemy_Keese_Electric_AllDay 99
 Enemy_Wizzrobe_Electric_Senior 13
 Enemy_Assassin_Junior_Rider 52
 Enemy_Assassin_Junior_GateKeeper 7
-Enemy_CDungeon_Practice 13
+Enemy_CDungeon_Practice 12
 Enemy_Bokoblin_Armor_Junior 17
 Enemy_Chuchu_Electric_Senior 2
 Enemy_Bokoblin_Sniper_Junior 3
@@ -95,7 +95,7 @@ Enemy_Lynel_Junior 6
 Enemy_Assassin_Middle_Gatekeeper 5
 Enemy_Golem_Junior 8
 Enemy_Chuchu_Fire_Junior 33
-Enemy_Assassin_Senior 4
+Enemy_Assassin_Senior 6
 Enemy_Chuchu_Fire_Middle_Army 2
 Enemy_Bokoblin_Guard_Junior_Ambush 3
 Enemy_DungeonBoss_Gerudo_Underground 3
@@ -105,7 +105,7 @@ Enemy_Lizalfos_Ice 73
 Enemy_Golem_Middle 22
 Enemy_Chuchu_Junior 82
 Enemy_Bokoblin_Guard_Junior_Golem_Fort 18
-Enemy_Keese_Ice_AllDay 95
+Enemy_Keese_Ice_AllDay 94
 Enemy_Assassin_Junior 52
 Enemy_Drake_Fire 4
 Enemy_Lizalfos_Guard_Middle_LongVisibility 9
@@ -127,10 +127,10 @@ Enemy_Zonau_Golem_Middle 16
 Enemy_Moriblin_Dark 24
 Enemy_Assassin_Shooter_Junior 77
 Enemy_Bokoblin_Boss_Dark 1
-Enemy_Toby_Junior_Terminal 1
+Enemy_Toby_Junior_Terminal 0
 Enemy_Drake_Ice 3
 Enemy_DungeonBoss_Goron 2
-Enemy_Bokoblin_Junior 519
+Enemy_Bokoblin_Junior 523
 Enemy_Bokoblin_Boss_Junior 21
 Enemy_Zombie_Junior 210
 Enemy_Chuchu_Senior 7
@@ -141,7 +141,7 @@ Enemy_Zonau_BlockMaster_Junior 6
 Enemy_Chuchu_Ice_Senior 1
 Enemy_Keese_AllDay 121
 Enemy_Treant_E_Dummy 257
-Enemy_Bokoblin_NoSleep_Junior 4
+Enemy_Bokoblin_NoSleep_Junior 3
 Enemy_Giant_Junior 17
 Enemy_Bokoblin_Boss_Senior_NoOrder 1
 Enemy_Golem_Ice_KeyCrystal 1
@@ -169,7 +169,7 @@ Enemy_Giant_Junior_KeyCrystal 1
 Enemy_Giant_Middle 15
 Enemy_Golem_Fire 8
 Enemy_Chuchu_Ice_Middle_Army 2
-Enemy_Golem_Fire_KeyCrystal 2
+Enemy_Golem_Fire_KeyCrystal 1
 Enemy_Golem_Fort_A 18
 Enemy_Golem_Ice 8
 Enemy_Golem_Junior_KeyCrystal 1
@@ -194,7 +194,7 @@ Enemy_Bokoblin_Guard_Junior_TreeHouseTop 11
 Enemy_LikeLike_Electric 30
 Enemy_DungeonBoss_Zora_Uncleared 1
 Enemy_LikeLike_Fire 9
-Enemy_Assassin_Shooter_Junior_Practice 1
+Enemy_Assassin_Shooter_Junior_Practice 0
 Enemy_LikeLike_Crack 16
 Enemy_LikeLike_Fire_RagdollShort 19
 Enemy_LikeLike_Ice 22
