@@ -218,4 +218,3 @@ SpObj_TiltingDoll_A_01
 SpObj_TimerBomb_A_01
 SpObj_WindGenerator_A_01
 WaterFruit
-None

@@ -36,18 +36,18 @@ int main(int argc, char *argv[])
     std::filesystem::path gameData("../data");
     std::vector<TrackedFile> filesToEdit;
 
-    // run these 4 lines for each thing being randomized
+    // run these 3 lines for each thing being randomized
     // enemies
     std::unordered_map<std::string, unsigned int> enemyLookUp;
     readObjects("../data/unique/enemies.txt", enemyLookUp);
-    std::regex enemyPattern("(Enemy_)[a-zA-Z0-9_]+");
-    GameObjTracker enemies = {"enemy", "enemy", &enemyLookUp, enemyPattern};
+    GameObjTracker enemies = {"enemy", "enemy", &enemyLookUp, NULL};
 
     // weapons
     std::unordered_map<std::string, unsigned int> weaponLookUp;
     readObjects("../data/unique/allweapons.txt", weaponLookUp);
-    std::regex weaponPattern("(Weapon_(Lsword|Spear|Sword|Shield|Bow)_)[a-zA-Z0-9_]+");
-    GameObjTracker weapons = {"weapon", "enemy", &weaponLookUp, weaponPattern};
+    GameObjTracker weapons = {"weapon", "enemy", &weaponLookUp, NULL};
+
+    enemies.dynamicContains = &weapons;
     
 
     GameObjTracker trackers[] = {
@@ -78,11 +78,12 @@ int main(int argc, char *argv[])
     ) {
         if (!reindex)
             std::cout << "Couldn't read game object data from disk. ";
-        std::cout << "Indexing files..." << std::endl;
-        indexGameData(romfsDir, filesToEdit, trackers, nTrackers, debug);
+        std::cout << "Indexing files..." << std::endl << std::endl;
+        indexMapData(romfsDir, filesToEdit, trackers, nTrackers, weaponTypes);
         if (!writeGameData(gameData, filesToEdit, trackers, nTrackers))
             std::cout << "Couldn't write game object data to disk." << std::endl;
     }
 
-    randomize(romfsDir, targetDir, filesToEdit, trackers, nTrackers, weaponTypes, weaponLists, chaos, debug);
+    std::cout << std::endl << "Randomizing map files..." << std::endl << std::endl;
+    randomizeMap(romfsDir, targetDir, filesToEdit, trackers, nTrackers, weaponTypes, weaponLists, chaos, debug);
 }

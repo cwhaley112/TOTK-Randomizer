@@ -4,6 +4,9 @@ project(randomizer)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_CXX_FLAGS "-O2")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O3 -Wall")
+
 add_subdirectory(lib/oead)
 add_subdirectory(lib/yaml-cpp)
 
