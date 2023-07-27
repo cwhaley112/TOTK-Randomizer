@@ -22,6 +22,15 @@ typedef struct GameObjTracker
 
 typedef struct
 {
+    std::vector<std::string> normal;
+    std::unordered_set<std::string> dungeonBosses;
+    std::unordered_set<std::string> otherBosses;
+    unsigned long dungeonBossThreshold;
+    unsigned long otherBossThreshold;
+} EnemyClass;
+
+typedef struct
+{
     std::unordered_set<std::string> oneHanded;
     std::unordered_set<std::string> twoHanded;
     std::unordered_set<std::string> bow;

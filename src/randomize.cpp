@@ -1,7 +1,7 @@
 #include "randomize.h"
 
 void randomizeMapFile(std::filesystem::path toEdit, std::filesystem::path toSave, const GameObjTracker trackers[], std::vector<std::vector<std::string>> &sampleData, UD &uniform, std::mt19937 &mt,
-                      WeaponClass &weaponTypes, WeaponLists &weaponLists, const int enemyIx, const int weaponIx, const bool chaos, int threshold)
+                      EnemyClass &enemyTypes, WeaponClass &weaponTypes, WeaponLists &weaponLists, const int enemyIx, const int weaponIx, const bool chaos, unsigned int threshold)
 {
 
     int i;
@@ -39,7 +39,7 @@ void randomizeMapFile(std::filesystem::path toEdit, std::filesystem::path toSave
         {
             gotMatch |= true;
             isEnemy = true;
-            newEnemy = randomizeEnemy(actors, i, sampleData, uniform, mt, enemyIx, chaos);
+            newEnemy = randomizeEnemy(actors, enemyTypes, i, sampleData, uniform, mt, enemyIx, chaos);
             weaponsEnabled = weaponTypes.actorCandidates.find(newEnemy) != weaponTypes.actorCandidates.end();
         }
 
@@ -62,14 +62,15 @@ void randomizeMapFile(std::filesystem::path toEdit, std::filesystem::path toSave
         cullDynamic(actors, i, toRemove);
     }
 
-    byml = oead::Byml::FromText(yamlToString(yaml));
+    std::string yamlStr = yamlToString(yaml);
+    byml = oead::Byml::FromText(yamlStr);
 
     std::filesystem::create_directories(toSave.parent_path());
     saveByml(toSave.string(), byml);
 }
 
 void randomizeMap(const std::filesystem::path romfsDir, std::filesystem::path targetDir, const std::vector<TrackedFile> &filesToEdit, const GameObjTracker trackers[], const int nTrackers,
-                  WeaponClass &weaponTypes, WeaponLists &weaponLists, const bool chaos, const bool debug)
+                  EnemyClass &enemyTypes, WeaponClass &weaponTypes, WeaponLists &weaponLists, const bool chaos, const bool debug)
 {
 
     std::filesystem::path bancDir = romfsDir / "Banc";
@@ -78,8 +79,8 @@ void randomizeMap(const std::filesystem::path romfsDir, std::filesystem::path ta
     std::filesystem::create_directories(targetDir);
 
     // vars
-    int i, distributionRange, threshold;
-    unsigned int enemyIx, weaponIx;
+    int i, distributionRange;
+    unsigned int enemyIx, weaponIx, threshold;
     std::filesystem::path toEdit, toSave;
     std::vector<std::vector<std::string>> sampleData;
     std::unordered_map<std::string, unsigned int> getTrackerIx;
@@ -95,7 +96,9 @@ void randomizeMap(const std::filesystem::path romfsDir, std::filesystem::path ta
         distributionRange += sampleData[i].size();
     }
     uniform = createUniformDistribution(distributionRange);
-    threshold = (int)(distributionRange * 0.5); // 50% chance for weapon/arrow fusions + whether enemy has sword && shield (vs just 1)
+    threshold = (unsigned int)(distributionRange * 0.5); // 50% chance for weapon/arrow fusions + whether enemy has sword && shield (vs just 1)
+    enemyTypes.dungeonBossThreshold = (unsigned long)(distributionRange * 0.05);
+    enemyTypes.otherBossThreshold = (unsigned long)(distributionRange * 0.5);
 
     // main loop
     enemyIx = getTrackerIx["enemy"];
@@ -107,15 +110,28 @@ void randomizeMap(const std::filesystem::path romfsDir, std::filesystem::path ta
         toSave = targetDir / filesToEdit[i].filePath;
         std::cout << toSave.string() << std::endl;
 
-        randomizeMapFile(toEdit, toSave, trackers, sampleData, uniform, mt, weaponTypes, weaponLists, enemyIx, weaponIx, chaos, threshold);
+        randomizeMapFile(toEdit, toSave, trackers, sampleData, uniform, mt, enemyTypes, weaponTypes, weaponLists, enemyIx, weaponIx, chaos, threshold);
     }
 }
 
-std::string randomizeEnemy(YAML::Node &actors, const int i, std::vector<std::vector<std::string>> &sampleData, UD &uniform, std::mt19937 &mt, const int enemyIx, const bool chaos)
+std::string randomizeEnemy(YAML::Node &actors, EnemyClass &enemyTypes, const int i, std::vector<std::vector<std::string>> &sampleData, UD &uniform, std::mt19937 &mt, const int enemyIx, const bool chaos)
 {
 
     int sampleIx = uniform(mt) % sampleData[enemyIx].size();
     std::string sample = getSample(sampleData[enemyIx], sampleIx, chaos);
+    // std::cout << sample << std::endl;
+
+    if (chaos && enemyTypes.dungeonBosses.find(sample) != enemyTypes.dungeonBosses.end() && uniform(mt) > enemyTypes.dungeonBossThreshold)
+    {
+        sample = getSample(enemyTypes.normal, sampleIx % enemyTypes.normal.size(), chaos);
+        // std::cout << "re-rolled: " << sample << std::endl;
+    }
+    else if (chaos && enemyTypes.otherBosses.find(sample) != enemyTypes.otherBosses.end() && uniform(mt) > enemyTypes.otherBossThreshold)
+    {
+        sample = getSample(enemyTypes.normal, sampleIx % enemyTypes.normal.size(), chaos);
+        // std::cout << "re-rolled: " << sample << std::endl;
+    }
+
     actors[i]["Gyaml"] = sample;
 
     // remove rails (they cause crashes for certain enemies)
@@ -126,7 +142,7 @@ std::string randomizeEnemy(YAML::Node &actors, const int i, std::vector<std::vec
     return sample;
 }
 
-void randomizeWeapon(YAML::Node &actors, const int i, std::vector<std::vector<std::string>> &sampleData, UD &uniform, std::mt19937 &mt, const int threshold, const int weaponIx, const bool chaos,
+void randomizeWeapon(YAML::Node &actors, const int i, std::vector<std::vector<std::string>> &sampleData, UD &uniform, std::mt19937 &mt, const unsigned int threshold, const int weaponIx, const bool chaos,
                      WeaponLists &weaponLists, WeaponClass &weaponTypes, const bool enemyWeapon, bool &canFuseWeapon, bool &canFuseShield, bool &canFuseArrow)
 {
     std::string extraWeapon = "";
@@ -186,7 +202,7 @@ void randomizeWeapon(YAML::Node &actors, const int i, std::vector<std::vector<st
     }
 }
 
-std::vector<std::string> randomizeEnemyFusion(YAML::Node &actors, const int i, UD &uniform, std::mt19937 &mt, const int threshold, WeaponLists &weaponLists, WeaponClass &weaponTypes, bool canFuseWeapon,
+std::vector<std::string> randomizeEnemyFusion(YAML::Node &actors, const int i, UD &uniform, std::mt19937 &mt, const unsigned int threshold, WeaponLists &weaponLists, WeaponClass &weaponTypes, bool canFuseWeapon,
                                               bool canFuseShield, bool canFuseArrow)
 {
     int sampleIx;
@@ -238,7 +254,7 @@ std::vector<std::string> randomizeEnemyFusion(YAML::Node &actors, const int i, U
     return toRemove;
 }
 
-std::vector<std::string> randomizeStandaloneFusion(YAML::Node &actors, const int i, UD &uniform, std::mt19937 &mt, const int threshold, WeaponLists &weaponLists, WeaponClass &weaponTypes, bool canFuseWeapon,
+std::vector<std::string> randomizeStandaloneFusion(YAML::Node &actors, const int i, UD &uniform, std::mt19937 &mt, const unsigned int threshold, WeaponLists &weaponLists, WeaponClass &weaponTypes, bool canFuseWeapon,
                                                    bool canFuseShield)
 {
     int sampleIx;
@@ -272,6 +288,10 @@ void cullDynamic(YAML::Node &actors, const int i, const std::vector<std::string>
         if (actors[i]["Dynamic"][toRemove[j]])
             actors[i]["Dynamic"].remove(toRemove[j]);
     }
+
+    // role causes crashes for lynels, not sure for enemies but being safe
+    if (actors[i]["Dynamic"]["Role"])
+        actors[i]["Dynamic"].remove("Role");
 }
 
 std::vector<unsigned int> createEditQueue(std::string matches, std::unordered_map<std::string, unsigned int> &getTrackerIx)
@@ -376,5 +396,7 @@ std::string yamlToString(YAML::Node yaml)
 {
     YAML::Emitter out;
     out << yaml;
-    return std::string(out.c_str());
+    std::string outStr(out.c_str());
+    outStr.append("\n"); // avoids some memory error caused by yaml-cpp -> oead::byml compatability
+    return outStr;
 }

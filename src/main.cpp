@@ -1,10 +1,9 @@
-#include <unordered_map>
-#include <vector>
-#include <string>
-#include <filesystem>
 #include "indexMap.h"
 #include "randomize.h"
-
+#include <filesystem>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 int main(int argc, char *argv[])
 {
@@ -15,14 +14,16 @@ int main(int argc, char *argv[])
     bool reindex = false;
 
     std::string curArg;
-    if (argc>1) {
-        for (int i=1; i<argc; i++) {
+    if (argc > 1)
+    {
+        for (int i = 1; i < argc; i++)
+        {
             curArg = std::string(argv[i]);
-            if (curArg=="--chaos")
+            if (curArg == "--chaos")
                 chaos = true;
-            else if (curArg=="--debug")
+            else if (curArg == "--debug")
                 debug = true;
-            else if (curArg=="--reindex")
+            else if (curArg == "--reindex")
                 reindex = true;
         }
     }
@@ -48,14 +49,18 @@ int main(int argc, char *argv[])
     GameObjTracker weapons = {"weapon", "enemy", &weaponLookUp, NULL};
 
     enemies.dynamicContains = &weapons;
-    
 
     GameObjTracker trackers[] = {
-        enemies
-        ,weapons
-    };
+        enemies, weapons};
 
-    int nTrackers = sizeof(trackers)/sizeof(trackers[0]); // TIL you need to calc this in same scope that array is declared
+    int nTrackers = sizeof(trackers) / sizeof(trackers[0]); // TIL you need to calc this in same scope that array is declared
+
+    EnemyClass enemyTypes;
+    readObjectsToSet("../data/unique/bosses_dungeon.txt", enemyTypes.dungeonBosses);
+    readObjectsToSet("../data/unique/bosses_nodungeon.txt", enemyTypes.otherBosses);
+    std::unordered_set<std::string> normalEnemies;
+    readObjectsToSet("../data/unique/enemies_nobosses.txt", normalEnemies);
+    enemyTypes.normal = std::vector<std::string>(normalEnemies.begin(), normalEnemies.end());
 
     WeaponClass weaponTypes;
     readObjectsToSet("../data/unique/onehandedweapons.txt", weaponTypes.oneHanded);
@@ -70,20 +75,23 @@ int main(int argc, char *argv[])
         std::vector(weaponTypes.oneHanded.begin(), weaponTypes.oneHanded.end()),
         std::vector(weaponTypes.shield.begin(), weaponTypes.shield.end()),
         std::vector(weaponTypes.weaponAttachments.begin(), weaponTypes.weaponAttachments.end()),
-        std::vector(weaponTypes.bowAttachments.begin(), weaponTypes.bowAttachments.end())
-    };
+        std::vector(weaponTypes.bowAttachments.begin(), weaponTypes.bowAttachments.end())};
 
     // try to read data from files
     if (reindex || !(readGameFileData(gameData, filesToEdit) && readGameObjectData(gameData, trackers, nTrackers)) // TODO test that exceptions are handled if files don't exist in orig banc folder (like if it gets moved)
-    ) {
+    )
+    {
         if (!reindex)
             std::cout << "Couldn't read game object data from disk. ";
-        std::cout << "Indexing files..." << std::endl << std::endl;
+        std::cout << "Indexing files..." << std::endl
+                  << std::endl;
         indexMapData(romfsDir, filesToEdit, trackers, nTrackers, weaponTypes);
         if (!writeGameData(gameData, filesToEdit, trackers, nTrackers))
             std::cout << "Couldn't write game object data to disk." << std::endl;
     }
 
-    std::cout << std::endl << "Randomizing map files..." << std::endl << std::endl;
-    randomizeMap(romfsDir, targetDir, filesToEdit, trackers, nTrackers, weaponTypes, weaponLists, chaos, debug);
+    std::cout << std::endl
+              << "Randomizing map files..." << std::endl
+              << std::endl;
+    randomizeMap(romfsDir, targetDir, filesToEdit, trackers, nTrackers, enemyTypes, weaponTypes, weaponLists, chaos, debug);
 }
