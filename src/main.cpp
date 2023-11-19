@@ -7,14 +7,17 @@
 
 int main(int argc, char *argv[])
 {
-    std::string romfsPath = "/mnt/w/yuzu/dump/0100F2C0115B6000/decompressed";
-    std::string targetPath = "..";
+    std::string targetPath = ".";
     bool chaos = false; // maintains distinct object counts
     bool debug = false; // fixes seed
     bool reindex = false;
 
     std::string curArg;
-    if (argc > 1)
+    if (argc < 2) {
+        std::cout << "missing argument: romfs path" << std::endl;
+        return 0;
+    }
+    if (argc > 2)
     {
         for (int i = 1; i < argc; i++)
         {
@@ -27,6 +30,7 @@ int main(int argc, char *argv[])
                 reindex = true;
         }
     }
+    std::string romfsPath = std::string(argv[1]);
 
     std::cout << "chaos: " << chaos << " debug: " << debug << " reindex " << reindex << std::endl;
 
